@@ -1,0 +1,11 @@
+.vscode
+*.Rproj*
+**/.DS_Store
+**/.RData
+**/.Rhistory
+**/~$*
+**/*.o
+**/*.so
+**/*.dll
+man/
+Makefile
