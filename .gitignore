@@ -7,5 +7,6 @@
 **/*.o
 **/*.so
 **/*.dll
+streambugs.Rcheck/
 man/
 Makefile
