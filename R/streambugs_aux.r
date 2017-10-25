@@ -12,6 +12,78 @@
 #
 ################################################################
 
+#' Construct the streambugs ODE state variable names
+#'
+#' Construct encoded labels of streambugs ODE state variable names from reach
+#' names, habitat names, and taxa names for at least one of the POM, Algae, or
+#' Invertebrates groups.
+#'
+#' @param Reaches reach names character vector; duplicates are dropped
+#' @param Habitats habitats names character vector; duplicates are dropped
+#' @param POM optional taxa character vector of POM group; duplicates are
+#'  dropped (note: at least one taxon name out of all groups has to be given)
+#' @param Algae optional taxa character vector of Algae group; duplicates are
+#'  dropped (note: at least one taxon name out of all groups has to be given)
+#' @param Invertebrates optional taxa character vector of Invertebrates group
+#'  duplicates are dropped (note: at least one taxon name out of all groups has
+#;  to be given)
+#'
+#' @return vector with state variable names in the form of
+#'    \code{"Reach_Habitat_Taxon_Group"}
+#'
+#' @examples
+#' Reaches           <- paste0("Reach",1:2)
+#' Habitats          <- paste0("Hab",1:1)
+#' y.names <- construct.statevariables(Reaches,Habitats,Invertebrates=c("Baetis","Ecdyonurus"))
+#'
+#' @export
+construct.statevariables <- function(Reaches,Habitats,POM=NULL,Algae=NULL,Invertebrates=NULL)
+{
+  # validate that at least one taxa was provided
+  if ( is.null(c(POM, Algae, Invertebrates)) )
+    stop("Missing at least one taxa from either group of POM, Algae, or Invertebrates")
+
+  # encoding paste function helper
+  paste.enc <- function(...) paste(..., sep="_")
+
+  # rm duplicates
+  if ( length(unique(Reaches)) != length(Reaches) ) {
+    warning("Non unique reaches names - dropping duplicates")
+    Reaches = unique(Reaches)
+  }
+  if ( length(unique(Habitats)) != length(Habitats) ) {
+    warning("Non unique reaches names - dropping duplicates")
+    Habitats = unique(Habitats)
+  }
+
+  # merge taxa groups
+  POM.enc <- if (is.null(POM)) NULL else paste.enc(POM, "POM")
+  Algae.enc <- if (is.null(Algae)) NULL else paste.enc(Algae, "Algae")
+  Invertebrates.enc <- if (is.null(Invertebrates)) NULL else paste.enc(Invertebrates, "Invertebrates")
+  taxa.enc <- c(POM.enc, Algae.enc, Invertebrates.enc)
+
+  # rm duplicates
+  if ( length(unique(taxa.enc)) != length(taxa.enc) ) {
+    warning("Non unique taxa names within a group - dropping duplicates")
+    taxa.enc = unique(taxa.enc)
+  }
+
+  # encode state variables: (reach_i, habitat_i) \times taxon_j
+  n.Reaches = length(Reaches)
+  n.Habitats = length(Habitats)
+  n.Taxa = length(taxa.enc)
+  y.names <- character(n.Reaches*n.Habitats*n.Taxa)
+  for ( i in 1:n.Reaches )
+    for ( j in 1:n.Habitats )
+      y.names[(i-1)*n.Habitats*n.Taxa+ (j-1)*n.Taxa + 1:n.Taxa] <-
+        paste.enc(Reaches[i], Habitats[j], taxa.enc)
+
+  # sanity check: all values set
+  if ( any(y.names == "") )
+    stop("problem constructing state variables")
+
+  return(y.names)
+}
 
 # extract reach names, habitat names, taxa names and optional
 # group names from labels of a state vector:
@@ -38,10 +110,10 @@
 #'    }
 #'
 #' @examples
-#' y.names <- c("Reach1_Hab1_Baetis_Invertebrates ","Reach1_Hab1_Ecdyonurus_Invertebrates ",
+#' y.names <- c("Reach1_Hab1_Baetis_Invertebrates","Reach1_Hab1_Ecdyonurus_Invertebrates",
 #'              "Reach2_Hab1_Baetis_Invertebrates", "Reach2_Hab1_Ecdyonurus_Invertebrates")
 #' decode.statevarnames(y.names)
-#' 
+#'
 #' @export
 decode.statevarnames <- function(y.names)
 {

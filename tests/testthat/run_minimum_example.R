@@ -32,23 +32,8 @@ POM               <- paste("POM",1:n.POM,sep="")
 Algae             <- paste("Alga",1:n.Algae,sep="")
 Invertebrates     <- paste("Invert",1:n.Invertebrates,sep="")
 
-y.names <- character(0)
-for ( i in 1:n.Reaches )
-{
-  for ( j in 1:n.Habitats )
-  {
-    y.names <-
-      c(y.names,
-        paste(paste(Reaches[i],Habitats[j],sep="_"),
-              c(paste(POM,"POM",sep="_"),
-                paste(Algae,"Algae",sep="_"),
-                paste(Invertebrates,"Invertebrates",sep="_")),
-              sep="_"))
-  }
-}
-if ( length(y.names) != n.Reaches*n.Habitats*(n.POM+n.Algae+n.Invertebrates) ) stop("problem constructing state variables")
-
-# FIXME: used before tests
+# FIXME: used before tests, not actually tested
+y.names <- construct.statevariables(Reaches,Habitats,POM=POM,Algae=Algae,Invertebrates=Invertebrates)
 y.names <- decode.statevarnames(y.names)
 
 
