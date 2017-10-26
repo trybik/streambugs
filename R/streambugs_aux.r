@@ -15,12 +15,12 @@
 #' Construct the streambugs ODE state variable names
 #'
 #' Construct encoded labels of streambugs ODE state variable names from reach
-#' names, habitat names, and taxa names for at least one of the POM, Algae, or
+#' names, habitat names, and "taxa" names for at least one of the POM, Algae, or
 #' Invertebrates groups.
 #'
 #' @param Reaches reach names character vector; duplicates are dropped
 #' @param Habitats habitats names character vector; duplicates are dropped
-#' @param POM optional character vector of POM (particulate organic matter) group; 
+#' @param POM optional ("taxa") character vector of POM (particulate organic matter) group; 
 #'   duplicates are dropped 
 #'   (note: at least one "taxon" name out of all groups has to be given)
 #' @param Algae optional taxa character vector of Algae group; duplicates are
