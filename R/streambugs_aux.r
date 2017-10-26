@@ -20,8 +20,9 @@
 #'
 #' @param Reaches reach names character vector; duplicates are dropped
 #' @param Habitats habitats names character vector; duplicates are dropped
-#' @param POM optional taxa character vector of POM group; duplicates are
-#'  dropped (note: at least one taxon name out of all groups has to be given)
+#' @param POM optional character vector of POM (particulate organic matter) group; 
+#'   duplicates are dropped 
+#'   (note: at least one "taxon" name out of all groups has to be given)
 #' @param Algae optional taxa character vector of Algae group; duplicates are
 #'  dropped (note: at least one taxon name out of all groups has to be given)
 #' @param Invertebrates optional taxa character vector of Invertebrates group
@@ -39,9 +40,9 @@
 #' @export
 construct.statevariables <- function(Reaches,Habitats,POM=NULL,Algae=NULL,Invertebrates=NULL)
 {
-  # validate that at least one taxa was provided
+  # validate that at least one taxon or POM was provided
   if ( is.null(c(POM, Algae, Invertebrates)) )
-    stop("Missing at least one taxa from either group of POM, Algae, or Invertebrates")
+    stop("Missing at least one \"taxon\" from either group of POM, Algae, or Invertebrates")
 
   # encoding paste function helper
   paste.enc <- function(...) paste(..., sep="_")
@@ -132,7 +133,7 @@ decode.statevarnames <- function(y.names)
     y.groups[i]   <- y.split[[i]][4]
   }
 
-  # determine reach, habitat, taxa and group names:
+  # determine reach, habitat, taxon and group names:
 
   reaches  <- unique(y.reaches[!is.na(y.reaches)])
   habitats <- unique(y.habitats[!is.na(y.habitats)])
@@ -156,7 +157,7 @@ decode.statevarnames <- function(y.names)
   taxa.na <- which(is.na(y.taxa))
   if ( length(taxa.na)  > 0 )
   {
-    warning("Undefined taxa name(s) in component(s) of state vector: ",
+    warning("Undefined taxon name(s) in component(s) of state vector: ",
             paste(taxa.na,collapse=","))
   }
   y.groups[is.na(y.groups)] <- ""
