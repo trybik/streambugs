@@ -1,5 +1,5 @@
 .vscode
-*.Rproj*
+.R*
 **/.DS_Store
 **/.RData
 **/.Rhistory
@@ -7,6 +7,6 @@
 **/*.o
 **/*.so
 **/*.dll
-streambugs.Rcheck/
+streambugs.R*
 man/
 Makefile
