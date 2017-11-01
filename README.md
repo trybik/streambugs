@@ -42,13 +42,13 @@ To create docs, build package and install it run in this folder:
 
 To run tests, with the package as a working directory, run:
 
-    $ devtools::test()
+    > devtools::test()
 
 #### Check for CRAN submission
 
 To check for CRAN submission, with the package as a working directory, run:
 
-    $ devtools::check()
+    > devtools::check()
 
 ##### Check archive for submission
 
@@ -60,6 +60,10 @@ CRAN submission by running in shell:
 
 This creates the `streambugs.Rcheck/` folder which contains also a PDF file
 `streambugs-manual.pdf`, that is the R vignette of the package.
+
+Equivalently, from `R` shell, after the build, run:
+
+    > devtools::check(pkg_src)
 
 ### Cleanup
 

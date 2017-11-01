@@ -2,7 +2,7 @@ Package: streambugs
 Type: Package
 Title: Parametric ODE Model of Growth, Death, and Respiration of Different Taxa
 Version: 1.0
-Date: 2017-09-25
+Date: 2017-11-01
 Author: Peter Reichert, Mikolaj Rybinski, Nele Schuwirth
 Maintainer: Nele Schuwirth <nele.schuwirth@eawag.ch>
 Description: Numerically solve and plot solutions of a parametric ODE model of
@@ -11,7 +11,7 @@ Description: Numerically solve and plot solutions of a parametric ODE model of
         Ecology, 94(2), DOI: 10.1890/12-0591.1).
 URL: http://www.eawag.ch/en/department/siam/projects/streambugs/
 BugReports: https://github.com/trybik/streambugs/issues
-License: file LICENSE
+License: GPL-3 + file LICENSE
 Depends: R (>= 3.0.2)
 Imports: deSolve (>= 1.20)
 Suggests: testthat
