@@ -395,7 +395,6 @@ free.streambugs.C <- function()
 # atol=1e-3
 
 # TODO: add link to PDF syntax ref
-# TODO: add example using streambugs.example.model.toy
 
 #' Run the streambugs ODE model
 #'
@@ -439,6 +438,21 @@ free.streambugs.C <- function()
 #'      rates and taxon specific factors, present only if \code{return.res.add}
 #'      input parameter is set to \code{TRUE}.}
 #'    }
+#'
+#' @examples
+#' m <- streambugs.example.model.toy()
+#' # Display inputs: list of perturbed variables with time points and new values
+#' m$inp
+#' # Simluate
+#' res.C.default <- run.streambugs(y.names = m$y.names, times = m$times, par = m$par, inp = m$inp, C = TRUE)
+#' # Modify input (halve second perturbation size) and re-simulate
+#' m$inp$Reach3_w[2,2] <- m$inp$Reach3_w[2,2] / 2
+#' m$inp
+#' res.C.modified <- run.streambugs(y.names = m$y.names, times = m$times, par = m$par, inp = m$inp, C = TRUE)
+#' # Compare examplary trajectory of organic matter in one of the habitats
+#' var.name <- "Reach3_Hab1_POM1_POM"
+#' plot(m$times,res.C.default$res[, var.name], type="l", col="red")
+#' lines(m$times, res.C.modified$res[, var.name], col="green")
 #'
 #' @export
 run.streambugs <- function(y.names,times,par,inp=NA,C=FALSE,

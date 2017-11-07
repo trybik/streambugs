@@ -29,10 +29,10 @@
 #'
 #' @examples
 #' model <- streambugs.example.model.toy()
-#' # display values of the exponent "q" in the food limitation term;
+#' # display values of the exponent "q" in the food limitation term; Note:
 #  # non-prefixed parameter values (with "_" separator) are global values,
 #  # whereas prefixed values are specific to taxa defined by the prefix
-#' grep("(.*_)?q$", model$par, value=TRUE)
+#' model$par[grepl("(.*_)?q$", names(model$par))]
 #'
 #' @export
 streambugs.example.model.toy <- function() {
