@@ -1,6 +1,6 @@
 ################################################################
 #
-# streambugs 1.1dev
+# streambugs 1.0
 # =================
 #
 # -------------------
@@ -8,7 +8,7 @@
 # -------------------
 #
 # creation:      08.09.2012
-# modifications: 14.01.2014
+# modifications: 25.10.2017
 #
 ################################################################
 
@@ -20,8 +20,8 @@
 #'
 #' @param Reaches reach names character vector; duplicates are dropped
 #' @param Habitats habitats names character vector; duplicates are dropped
-#' @param POM optional ("taxa") character vector of POM (particulate organic matter) group; 
-#'   duplicates are dropped 
+#' @param POM optional ("taxa") character vector of POM (particulate organic matter) group;
+#'   duplicates are dropped
 #'   (note: at least one "taxon" name out of all groups has to be given)
 #' @param Algae optional taxa character vector of Algae group; duplicates are
 #'  dropped (note: at least one taxon name out of all groups has to be given)
@@ -1404,7 +1404,7 @@ get.inpind.parval.proc2 <- function(par.names,taxon1,group1,taxa2,groups2,reach,
 # function to get a structured representation of the system definition
 # --------------------------------------------------------------------
 
-# TODO: @NS, complement docs
+# TODO: add example using toy example API fun
 
 #' Get system definition of the streambugs ODE model
 #'
@@ -1807,6 +1807,8 @@ streambugs.get.sys.def <- function(y.names,par,inp=NA)
 
 # function to write the system definition to a file:
 # --------------------------------------------------
+
+# TODO: add example using toy example
 
 #' Write system definition of the streambugs ODE model
 #'

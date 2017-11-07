@@ -3,7 +3,7 @@ Type: Package
 Title: Parametric Ordinary Differential Equations Model of Growth, Death, and
         Respiration of Taxa
 Version: 1.0
-Date: 2017-11-01
+Date: 2017-11-07
 Author: Peter Reichert, Mikolaj Rybinski, Nele Schuwirth
 Maintainer: Nele Schuwirth <nele.schuwirth@eawag.ch>
 Description: Numerically solve and plot solutions of a parametric ordinary

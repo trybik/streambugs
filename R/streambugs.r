@@ -1,6 +1,6 @@
 ################################################################
 #
-# streambugs 1.1dev
+# streambugs 1.0
 # =================
 #
 # creation:      06.07.2012
@@ -394,6 +394,8 @@ free.streambugs.C <- function()
 # rtol=1e-4
 # atol=1e-3
 
+# TODO: add link to PDF syntax ref
+# TODO: add example using streambugs.example.model.toy
 
 #' Run the streambugs ODE model
 #'
@@ -430,7 +432,7 @@ free.streambugs.C <- function()
 #' @return A list with:\describe{
 #'    \item{\code{$res}}{matrix of class \code{\link{deSolve}} with up to as
 #'      many rows aselements in times and as many columns as elements in
-#'      \code{y.names}, plus an additional column for the time value. 
+#'      \code{y.names}, plus an additional column for the time value.
 #'      There will be a row for each element in times unless the
 #'      FORTRAN routine \code{"lsoda"} returns with an unrecoverable error.}
 #'    \item{\code{$res.add}}{optional additional output matrix with process
