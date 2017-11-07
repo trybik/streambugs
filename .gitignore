@@ -10,3 +10,4 @@
 streambugs.R*
 man/
 Makefile
+.Rproj.user
