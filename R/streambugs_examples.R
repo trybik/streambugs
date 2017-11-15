@@ -12,19 +12,20 @@
 #
 ################################################################
 
-# TODO: add link to PDF syntax ref
-
-#' Set-up the streambugs ODE toy example
+#' Set-up the streambugs toy model
 #'
-#' Set-up state variables, parameters, input, and output times for the
-#' streambugs ODE toy example.
+#' Set-up state variables, parameters, input, and output times of the
+#' streambugs toy model. The model is ready to run with
+#' \code{\link{run.streambugs}}.
+#'
+#' @template Streambugs_syntax
 #'
 #' @return List with:\describe{
 #'    \item{\code{$name}}{name of the example}
 #'    \item{\code{$y.names}}{list with names of state variables as returned by
-#'      the \link[streambugs]{decode.statevarnames} function}
+#'      the \link{decode.statevarnames} function}
 #'    \item{\code{$times}, \code{$par}, \code{$inp}:}{corresponding input
-#'          parameters of the \code{\link[streambugs]{run.streambugs}} function}
+#'          parameters of the \code{\link{run.streambugs}} function}
 #'    }
 #'
 #' @examples

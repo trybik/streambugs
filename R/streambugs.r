@@ -8,6 +8,14 @@
 #
 ################################################################
 
+#' Simulator of development of macroinvertebrate and algae taxa
+#'
+#' The main function of \pkg{streambugs} is \code{\link{run.streambugs}}.
+#' Remaining functions have auxiliary purpose to facilitate model creation,
+#' writing, and plotting of the simulation results, or to provide ready to use
+#' examples.
+"_PACKAGE"
+
 C.NA.int <- -999
 C.NA.double <- -999
 
@@ -394,18 +402,17 @@ free.streambugs.C <- function()
 # rtol=1e-4
 # atol=1e-3
 
-# TODO: add link to PDF syntax ref
-
 #' Run the streambugs ODE model
 #'
 #' Numerically solve streambugs ODE model (in either R or C version) for given
 #' parameters, inputs and time points, using the \code{\link[deSolve]{ode}}
 #' routine.
 #'
+#' @template Streambugs_syntax
+#'
 #' @param y.names state variables names, either as a vector encoded in the form
 #'    \code{"Reach_Habitat_Taxon"} or \code{"Reach_Habitat_Taxon_Group"}, or
-#'    a list as returned by \code{\link[streambugs]{decode.statevarnames}}
-#'    function
+#'    a list as returned by \code{\link{decode.statevarnames}} function
 #' @param times vector with time points for which output is wanted; the first
 #     value of times must be the initial time
 #' @param par vector with constant parameters and model inputs
@@ -429,8 +436,8 @@ free.streambugs.C <- function()
 #' @param ... further arguments passed to \code{\link[deSolve]{ode}}
 #'
 #' @return A list with:\describe{
-#'    \item{\code{$res}}{matrix of class \code{\link{deSolve}} with up to as
-#'      many rows aselements in times and as many columns as elements in
+#'    \item{\code{$res}}{matrix of class \code{\link[deSolve]{deSolve}} with up
+#'      to as many rows aselements in times and as many columns as elements in
 #'      \code{y.names}, plus an additional column for the time value.
 #'      There will be a row for each element in times unless the
 #'      FORTRAN routine \code{"lsoda"} returns with an unrecoverable error.}
