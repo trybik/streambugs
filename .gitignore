@@ -1,5 +1,4 @@
 .vscode
-.R*
 **/.DS_Store
 **/.RData
 **/.Rhistory
@@ -9,5 +8,5 @@
 **/*.dll
 streambugs.R*
 man/
-Makefile
+*.Rproj
 .Rproj.user

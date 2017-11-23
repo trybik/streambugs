@@ -1,0 +1,6 @@
+Makefile
+man-roxygen
+^\.gitignore$
+^.*\.Rproj$
+^\.Rproj\.user$
+^\.vscode$
