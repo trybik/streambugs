@@ -1423,7 +1423,7 @@ get.inpind.parval.proc2 <- function(par.names,taxon1,group1,taxa2,groups2,reach,
 #' sys.def$par.initcond$parvals
 #' # Get stoichiometric coefficients of consumption within the food web
 #' sys.def$par.stoich.web$Cons
-#' # Get stoichiometric coefficients of death reactions for each taxa
+#' # Get stoichiometric coefficients of death process for each taxon
 #' # (transforming them into a dead organic matter "POM")
 #' sys.def$par.stoich.taxon$Death
 #'
