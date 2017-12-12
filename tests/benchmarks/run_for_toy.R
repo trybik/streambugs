@@ -3,7 +3,7 @@ library(ggplot2)
 library(gridExtra)
 library(streambugs)
 
-benchmarks.csv.path <- "states_vs_time.csv"
+benchmarks.basename <- file.path("output","states_vs_time")
 
 # handler to suppress specific warnings from the streambugs library
 .streambugs.suppress.warning.handler <- function(w) {
@@ -16,6 +16,11 @@ benchmarks.csv.path <- "states_vs_time.csv"
 .count.n.interact <- function(sys.def) {
     par.stoich = c(unlist(sys.def$par.stoich.taxon), unlist(sys.def$par.stoich.web))
     length(par.stoich)
+}
+
+.update.list <- function(lst1, lst2) {
+    keys <- unique(c(names(lst1), names(lst2)))
+    as.list(setNames(mapply(function(x,y) if (is.null(y)) x else y, lst1[keys], lst2[keys]), keys))
 }
 
 #' Time `n.repeats` times `run.streambugs` (C version).
@@ -31,18 +36,22 @@ benchmarks.csv.path <- "states_vs_time.csv"
 #'          (constant over rows)}
 #'      \item{\code{"time"}}{ellapsed simulation time}
 #'    }
-.time.model <- function(n.repeats, streambugs.model.fun, ...) {
-    model <- do.call(streambugs.model.fun, list(...))
+.time.model <- function(n.repeats, streambugs.model.fun,
+    streambugs.model.fun.args=list(), run.streambugs.args=list()) {
+    model <- do.call(streambugs.model.fun, streambugs.model.fun.args)
+
+    run.args <- .update.list(list(
+            y.names  = model$y.names,
+            times    = model$times,
+            par      = model$par,
+            inp      = model$inp,
+            C        = TRUE
+        ), run.streambugs.args)
 
     # Note: warning handler does not significantly affect timing
     withCallingHandlers({
         time <- replicate(n.repeats, system.time({
-            res.C <- run.streambugs(
-                y.names  = model$y.names,
-                times    = model$times,
-                par      = model$par,
-                inp      = model$inp,
-                C        = TRUE)
+            res.C <- do.call(run.streambugs, run.args)
         })["elapsed"])
         sys.def <- streambugs.get.sys.def(model$y.names, model$par, model$inp)
     }, warning = .streambugs.suppress.warning.handler)
@@ -56,25 +65,48 @@ benchmarks.csv.path <- "states_vs_time.csv"
 .time.toy <- function(n.repeats, ...)
     .time.model(n.repeats, streambugs.example.model.toy, ...)
 
-benchmark.states.vs.time <- function() {
+benchmark.states.vs.time <- function(n.repeats.per.run=10, n.Reach.max=10, n.Hab.max=10, ...) {
     # burn-in (lib loading etc)
     .time.toy(3)
 
-    n.Reach.vec <- seq(1,10,by=1)
-    n.Hab.vec <- seq(1,10,by=1)
+    n.Reach.vec <- seq(1,n.Reach.max,by=1)
+    n.Hab.vec <- seq(1,n.Hab.max,by=1)
     grid <- expand.grid("n.Reach"=n.Reach.vec, "n.Hab"=n.Hab.vec)
     tdf.list <- apply(grid, 1,
         function(n) data.frame(t(n),
-            .time.toy(10, n.Reaches=n["n.Reach"], n.Habitats = n["n.Hab"])
+            .time.toy(n.repeats.per.run, streambugs.model.fun.args=list(
+                n.Reaches=n["n.Reach"], n.Habitats = n["n.Hab"]
+            ), run.streambugs.args=list(...))
         )
     )
     tdf <- Reduce(rbind, tdf.list, NULL)
     return(tdf)
 }
 
-# Uncomment to re-run benchmarks and write to CSV
-#tdf <- benchmark.states.vs.time()
-#write.csv(tdf, benchmarks.csv.path, row.names=FALSE)
+
+.get.benchmarks.file.name <- function(method, ext, basename=benchmarks.basename) {
+  paste0(benchmarks.basename, "_", method, ext)
+}
+.get.benchmarks.csv.name <- function(method, ...) {
+    .get.benchmarks.file.name(method, ".csv", ...)
+}
+.get.benchmarks.pdf.name <- function(method, ...) {
+    .get.benchmarks.file.name(method, ".pdf", ...)
+}
+
+
+methods.all = c("lsoda", "lsode", "lsodes", "lsodar", "vode", "daspk", "euler",
+    "rk4", "ode23", "ode45", "radau",  "bdf", "bdf_d", "adams", "impAdams",
+    "impAdams_d")
+methods.short = c("lsoda", "vode", "rk4", "ode23", "ode45", "radau",  "bdf")
+methods.none = c()
+# Adjust to run benchmarks
+methods = methods.none
+for (method in methods) {
+  tdf <- benchmark.states.vs.time(n.repeats.per.run=3, n.Reach.max=10, n.Hab.max=10, method=method)
+  benchmarks.csv.name <- .get.benchmarks.csv.name(method)
+  write.csv(tdf, benchmarks.csv.name, row.names = FALSE)
+}
 
 
 
@@ -106,14 +138,21 @@ benchmark.states.vs.time <- function() {
   return(p)
 }
 
-write.benchmarks.plot <- function(tdf, pdf.basename="state_vs_time", ...) {
+write.benchmarks.plot <- function(tdf, pdf.name, ...) {
     p0 <- .plot.states.vs.time(tdf, ...)
     p1 <- .plot.states.vs.time(tdf, color.factor = "n.Reach", ...)
     p2 <- .plot.states.vs.time(tdf, color.factor = "n.Hab", ...)
-    pdf(paste(pdf.basename,"pdf", sep="."), width=8, height=3*6, useDingbats=FALSE)
+    pdf(pdf.name, width=8, height=3*6, useDingbats=FALSE)
     grid.arrange(p0, p1, p2, nrow=3, ncol=1)
     dev.off()
 }
 
-tdf <- read.csv(benchmarks.csv.path, header=TRUE)
-write.benchmarks.plot(tdf, plot.title = "vary #Reaches and #Habitats")
+
+for (method in methods) {
+  benchmarks.csv.name <- .get.benchmarks.csv.name(method)
+  tdf <- read.csv(benchmarks.csv.name, header=TRUE)
+  # TODO pdf.basename re-factor
+  benchmarks.pdf.name <- .get.benchmarks.pdf.name(method)
+  write.benchmarks.plot(tdf, benchmarks.pdf.name,
+    plot.title = "vary #Reaches and #Habitats")
+}
