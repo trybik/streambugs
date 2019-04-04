@@ -13,6 +13,7 @@ benchmarks.basename <- file.path("output","states_vs_time")
 }
 
 .count.n.var <- function(sys.def) length(sys.def$y.names$y.names)
+# FIXME: always constant (56) when scaling reaches and habitats, and it should scale linearly
 .count.n.interact <- function(sys.def) {
     par.stoich = c(unlist(sys.def$par.stoich.taxon), unlist(sys.def$par.stoich.web))
     length(par.stoich)
@@ -95,15 +96,26 @@ benchmark.states.vs.time <- function(n.repeats.per.run=10, n.Reach.max=10, n.Hab
 }
 
 
+# TODO: benchmark w/ pracma and w/ cOde "cvode" implementation
+# cf. https://cran.r-project.org/web/views/DifferentialEquations.html
+# pracma:
+# ode23      ode23s     ode45      ode78      odregress
+#ode23(f, t0, tf, y0, rtol=1e-5, atol=1e-10)
+# rk4 rk4sys
+#rk4sys(f, a, b, y0, n)
+
 methods.all = c("lsoda", "lsode", "lsodes", "lsodar", "vode", "daspk", "euler",
     "rk4", "ode23", "ode45", "radau",  "bdf", "bdf_d", "adams", "impAdams",
     "impAdams_d")
-methods.short = c("lsoda", "vode", "rk4", "ode23", "ode45", "radau",  "bdf")
+#methods.todo = c("ode23", "lsode", "lsodes", "lsodar", "daspk", "euler", "bdf_d",
+#    "adams", "impAdams", "impAdams_d")
 methods.none = c()
+# TODO: select fastest and compare perf. for scaling invert and algae
+methods.fastest = c("lsoda", "lsodar", "rk4", "ode23", "bdf_d", "adams", "impAdams_d")
 # Adjust to run benchmarks
-methods = methods.none
+methods = methods.all
 for (method in methods) {
-  tdf <- benchmark.states.vs.time(n.repeats.per.run=3, n.Reach.max=10, n.Hab.max=10, method=method)
+  tdf <- benchmark.states.vs.time(n.repeats.per.run=10, n.Reach.max=10, n.Hab.max=10, method=method)
   benchmarks.csv.name <- .get.benchmarks.csv.name(method)
   write.csv(tdf, benchmarks.csv.name, row.names = FALSE)
 }
@@ -120,17 +132,17 @@ for (method in methods) {
   if (is.null(color.factor)) {
       p <- p +
           geom_point() + # Points
-          geom_smooth(method=lm, se=FALSE, fullrange=FALSE) # Add linear regression line
+          geom_smooth(method=lm, formula = y ~ x + I(x^2), se=FALSE, fullrange=FALSE) # Add linear regression line
   } else if (color.factor == "n.Reach") {
       p <- p +
           geom_point(aes(color=factor(n.Reach))) + # Points
           scale_color_discrete(name="#Reaches") +  # Legend name (opt: labels)
-          geom_smooth(aes(color=factor(n.Reach)), method=lm, se=FALSE, fullrange=FALSE) # Add linear regression line
+          geom_smooth(aes(color=factor(n.Reach)), method=lm, formula = y ~ x + I(x^2), se=FALSE, fullrange=FALSE) # Add linear regression line
   } else if (color.factor == "n.Hab") {
       p <- p +
           geom_point(aes(color=factor(n.Hab))) + # Points
           scale_color_discrete(name="#Habitats") +  # Legend name (opt: labels)
-          geom_smooth(aes(color=factor(n.Hab)), method=lm, se=FALSE, fullrange=FALSE) # Add linear regression line
+          geom_smooth(aes(color=factor(n.Hab)), method=lm, formula = y ~ x + I(x^2), se=FALSE, fullrange=FALSE) # Add quadratic regression line
   } else {
     stop("Invalid value of the `color.factor` argument")
   }
